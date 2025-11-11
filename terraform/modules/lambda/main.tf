@@ -41,10 +41,3 @@ resource "aws_lambda_event_source_mapping" "sqs_to_lambda" {
   batch_size       = 10                      # messages to send in one invocation
 }
 
-output "function_name" {
-  value = aws_lambda_function.this.function_name
-}
-
-output "function_arn" {
-  value = aws_lambda_function.this.arn
-}
