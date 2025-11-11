@@ -36,6 +36,6 @@ provider "aws" {
 }
 
 provider "docker" {
-    host = "unix:///Users/ketansahu/.docker/run/docker.sock"
+    host = "unix:///var/run/docker.sock"
 }
 
