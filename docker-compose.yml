@@ -4,15 +4,28 @@ services:
     image: localstack/localstack:latest
     container_name: localstack
     ports:
-      - "4566:4566"   # LocalStack edge port (all services expose through here)
-      - "4571:4571"   # Additional port sometimes used
+      - "4566:4566"
     environment:
-      # SERVICES: which services to start inside LocalStack
       - SERVICES=s3,sqs,dynamodb,iam,lambda,cloudwatch,logs
       - DEFAULT_REGION=eu-central-1
-      - DATA_DIR=/tmp/localstack/data
-      - LAMBDA_EXECUTOR=docker-reuse   # run Lambdas inside separate containers (recommended)
+      - LAMBDA_EXECUTOR=docker-reuse
       - DEBUG=1
     volumes:
-      - "./localstack:/var/lib/localstack"      # persist LocalStack data locally
-      - "/var/run/docker.sock:/var/run/docker.sock" # allow LocalStack to run lambda containers
+      - "./localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  terraform:
+    # HashiCorp official Terraform image
+    image: hashicorp/terraform:1.8.4
+    container_name: terraform
+    working_dir: /workspace
+    volumes:
+      - ./terraform:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # these match the localstack provider configuration
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=eu-central-1
+    depends_on:
+      - localstack
